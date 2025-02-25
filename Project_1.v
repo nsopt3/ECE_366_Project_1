@@ -68,14 +68,14 @@ A, B, and Cin, and outputs are S, Cout. Use the module template of Figure 1(a). 
 */
 
 module one_bit_full_adder(A, B, Cin, S, Cout);
-input A, B, Cin;
-output S, Cout;
+    input A, B, Cin;
+    output S, Cout;
 
-// The always block will execute whenever A, B, Cin changes. The * means "all inputs used inside the block", which in our case is A, B, Cin.
-always @(*) begin
-    S = A ^ B ^ Cin; // Sum = A XOR B XOR Cin
-    Cout = (A & B) | (B & Cin) | (A & Cin); // Cout = (A AND B) OR (B AND Cin) OR (A AND Cin)
-end
+    // The always block will execute whenever A, B, Cin changes. The * means "all inputs used inside the block", which in our case is A, B, Cin.
+    always @(*) begin
+        S = A ^ B ^ Cin; // Sum = A XOR B XOR Cin
+        Cout = (A & B) | (B & Cin) | (A & Cin); // Cout = (A AND B) OR (B AND Cin) OR (A AND Cin)
+    end
 
 endmodule
 
@@ -88,7 +88,20 @@ A, B, and Cin, and outputs are S, Cout. Use the module template of Figure 1(a). 
 
 */
 
-// INSERT CODE FOR PART B HERE:
+module one_bit_full_adder(A, B, Cin, S, Cout);
+    input A, B, Cin;
+    output S, Cout;
+
+    wire AxorB, AB, AxorB_Cin; // Input connections
+
+    // Gates to create the 1 bit full adder
+    xor (AxorB, A, B);              // A XOR B
+    xor (S, AxorB, Cin);            // (A XOR B) XOR Cin
+    and (AB, A, B)                  // A AND B
+    and (AxorB_Cin, AxorB, Cin);    // (A XOR B) AND Cin
+    or (Cout, AB, AxorB_Cin);       // Basically Cout
+    
+endmodule
 
 // ************************************************************************************
 
