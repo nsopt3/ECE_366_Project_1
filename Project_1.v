@@ -79,6 +79,8 @@ end
 
 endmodule
 
+// ************************************************************************************
+
 /* Problem 1, part b:
 
 Design a 1-bit full-adder in Verilog using structural modeling. Assume that the inputs are
@@ -88,6 +90,8 @@ A, B, and Cin, and outputs are S, Cout. Use the module template of Figure 1(a). 
 
 // INSERT CODE FOR PART B HERE:
 
+// ************************************************************************************
+
 /* Problem 1, part c:
 
 Using the 1-bit full adder from either Part (a) or Part (b), design a 4-bit Ripple-Carry Adder
@@ -96,3 +100,28 @@ Using the 1-bit full adder from either Part (a) or Part (b), design a 4-bit Ripp
 */
 
 // INSERT CODE FOR PART C HERE:
+
+// ************************************************************************************
+
+/* Problem 1, part d:
+
+Enhance the 4-bit RCA of Part (c) to construct 4-bit Ripple-Carry Subtractor (RCS). Use the
+module template of 1(b). [Hint: Look at Lecture Slide 2, Slide 18.] [Points : 10]
+
+*/
+
+// INSERT CODE FOR PART D HERE:
+
+// ************************************************************************************
+
+/* Problem 1, part e:
+
+Design a testbench to test the 4-bit RCA/RCS. The testbench must perform at least one addition and one subtraction of two numbers (both signed and unsigned numbers.). (See the link
+at Testbench writing). [Hint: See Lecture 1 and Lecture 2 for signed number arithmetic.]
+[Points : 20]
+
+*/
+
+// INSERT CODE FOR PART E HERE:
+
+// ************************************************************************************
