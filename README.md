@@ -6,6 +6,7 @@
  - Nathan Sopt
  - Declan Hurless
  - Jesus Garcia
+ - Ephren Manning
 
  In this project you will find all of our code for VERILOG programming of computerized architechture!
 
