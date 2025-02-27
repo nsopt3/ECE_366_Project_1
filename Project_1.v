@@ -137,6 +137,24 @@ module template of 1(b). [Hint: Look at Lecture Slide 2, Slide 18.] [Points : 10
 
 // INSERT CODE FOR PART D HERE:
 
+module four_bit_RCA_RCS (
+    input [3:0] A, B,
+    input Cin, // Cin = 0 for addition, Cin = 1 for subtraction
+    output [3:0] S,
+    output Cout
+);
+    wire [3:0] B_xor; // B after XOR with Cin
+    wire c1, c2, c3;
+
+    assign B_xor = B ^ {4{Cin}}; // If Cin=1, invert B for subtraction
+
+    one_bit_full_adder FA0 (A[0], B_xor[0], Cin, S[0], c1);
+    one_bit_full_adder FA1 (A[1], B_xor[1], c1, S[1], c2);
+    one_bit_full_adder FA2 (A[2], B_xor[2], c2, S[2], c3);
+    one_bit_full_adder FA3 (A[3], B_xor[3], c3, S[3], Cout);
+    
+endmodule
+
 // ************************************************************************************
 
 /* Problem 1, part e:
