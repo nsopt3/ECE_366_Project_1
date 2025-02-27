@@ -137,7 +137,7 @@ module template of 1(b). [Hint: Look at Lecture Slide 2, Slide 18.] [Points : 10
 
 */
 
-module four_bit_RCS (
+module four_bit_RCA_RCS (
     input [3:0] A, B,
     input Cin, // Cin = 0 for addition, Cin = 1 for subtraction
     output [3:0] S,
