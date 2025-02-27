@@ -1,5 +1,5 @@
 // A verilog project for ECE 366
-// Nathan Sopt, Jesus Garcia, and Declan Hurless
+// Nathan Sopt, Jesus Garcia, Declan Hurless, and Ephren Manning
 
 // ************************** Some useful information ***********************************
 
