@@ -71,11 +71,8 @@ module one_bit_full_adder(A, B, Cin, S, Cout);
     input A, B, Cin;
     output S, Cout;
 
-    // The always block will execute whenever A, B, Cin changes. The * means "all inputs used inside the block", which in our case is A, B, Cin.
-    always @(*) begin
-        S = A ^ B ^ Cin; // Sum = A XOR B XOR Cin
-        Cout = (A & B) | (B & Cin) | (A & Cin); // Cout = (A AND B) OR (B AND Cin) OR (A AND Cin)
-    end
+    assign S = A ^ B ^ Cin; // Sum = A XOR B XOR Cin
+    assign Cout = (A & B) | (B & Cin) | (A & Cin); // Cout = (A AND B) OR (B AND Cin) OR (A AND Cin)
 
 endmodule
 
@@ -166,5 +163,33 @@ at Testbench writing). [Hint: See Lecture 1 and Lecture 2 for signed number arit
 */
 
 // INSERT CODE FOR PART E HERE:
+module four_bit_RCA_RCS_tb();
+  reg [3:0] A, B;
+  reg Cin;
+  wire [3:0] S;
+  wire Cout;
+  
+  four_bit_RCA_RCS uut (
+    .A 		(A),
+    .B		(B),
+    .Cin	(Cin),
+    .S		(S),
+    .Cout	(Cout)
+  );
+  
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars(1, four_bit_RCA_RCS_tb);
+    
+    Cin = 1'b0;
+    A = 4'd10;
+    B = 4'd4;
+    #100;
+    Cin = 1'b1;
+    A = 4'd10;
+    B = 4'd4;
+    #100;
+  end
 
+endmodule
 // ************************************************************************************
