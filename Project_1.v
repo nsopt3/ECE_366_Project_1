@@ -192,4 +192,72 @@ module four_bit_RCA_RCS_tb();
   end
 
 endmodule
-// ************************************************************************************
+
+// ******************************** Begin problem #2 **********************************
+
+// Problem 2 (Designing a 32-bit CLA Adder/Subtractor).
+
+/* 
+
+Problem 2, part a: 
+
+Design a 32-bit Carry Lookahead Adder (CLA) using a block size of four (4). Assume that
+the inputs are A[31:0], B[31:0], and Cin, and outputs are S[31:0], Cout. Use the 4-bit full
+adder (RCA) that you designed in Problem 1 as the component. You can only use 2-input
+AND and OR gates to construct the carry propagation and carry generate logic. No need to
+include subtraction operation for the CLA.
+
+*/
+
+// Ok, so before we can build the full 32-Bit CLA, we have to build a 4-Bit CLA block thingy to clone 8 times to give us 32-Bit CLA block
+
+module 4Bit_CLA(A, B, Cin, S, Cout);
+
+input [3:0] A, B;
+input Cin;
+output [3:0] S
+output Cout;
+
+wire [3:0] G, P, C; // Generate, propogate, and carry signals
+
+// Define what generate and propogate are
+assign G = A & B;   // A AND B
+assign P = A ^ B;   // A XOR B
+
+// Figuring out the carry computations (You can only use 2-Input AND and OR gates)
+assign C[0] = Cin;
+assign C[1] = G[0] | (P[0] & C[0]);
+assign C[2] = G[1] | (P[1] & C[1]);
+assign C[3] = G[2] | (P[2] & C[2]);
+assign Cout = G[3] | (P[3] & C[3]);
+
+// I'm not sure if this is how you get the sum, but hey we'll give it a go
+assign S = P ^ C[3:0];
+
+endmodule
+
+// Now that we have the 4-Bit CLA, we can hopefuly stack them side by side until we get a 32-Bit CLA
+
+module CLA(A, B, Cin, S, Cout); 
+
+input [31:0] A, B;
+input Cin;
+output [31:0] S
+output Cout;
+
+wire [7:0] C; // This should handle the carry bits between the 8 4-Bit CLA blocks
+
+// Here's the part where we smash these bad boys together to make a 32-Bit CLA super block
+4Bit_CLA cla0 (A[3:0], B[3:0], Cin, S[3:0], C[0]);
+4Bit_CLA cla1 (A[7:4], B[7:4], C[0], S[7:4], C[1]);
+4Bit_CLA cla2 (A[11:8], B[11:8], C[1], S[11:8], C[2]);
+4Bit_CLA cla3 (A[15:12], B[15:12], C[2], S[15:12], C[3]);
+4Bit_CLA cla4 (A[19:16], B[19:16], C[3], S[19:16], C[4]);
+4Bit_CLA cla5 (A[23:20], B[23:20], C[4], S[23:20], C[5]);
+4Bit_CLA cla6 (A[27:24], B[27:24], C[5], S[27:24], C[6]);
+4Bit_CLA cla7 (A[31:28], B[31:28], C[6], S[31:28], Cout);
+
+
+endmodule
+
+
