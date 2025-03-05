@@ -80,12 +80,12 @@ endmodule
 
 /* Problem 1, part b:
 
-Design a 1-bit full-adder in Verilog using structural modeling. Assume that the inputs are
+Design a 1-bit full-adder_ in Verilog using structural modeling. Assume that the inputs are
 A, B, and Cin, and outputs are S, Cout. Use the module template of Figure 1(a). [Points : 5]
 
 */
 
-module one_bit_full_adder(A, B, Cin, S, Cout);
+module one_bit_full_adder_structural(A, B, Cin, S, Cout);
     input A, B, Cin;
     output S, Cout;
 
@@ -94,7 +94,7 @@ module one_bit_full_adder(A, B, Cin, S, Cout);
     // Gates to create the 1 bit full adder
     xor (AxorB, A, B);              // A XOR B
     xor (S, AxorB, Cin);            // (A XOR B) XOR Cin
-    and (AB, A, B)                  // A AND B
+  	and (AB, A, B);                  // A AND B
     and (AxorB_Cin, AxorB, Cin);    // (A XOR B) AND Cin
     or (Cout, AB, AxorB_Cin);       // Basically Cout
     
@@ -179,7 +179,7 @@ module four_bit_RCA_RCS_tb();
   
   initial begin
     $dumpfile("dump.vcd");
-    $dumpvars(1, four_bit_RCA_RCS_tb);
+    $dumpvars(1);
     
     Cin = 1'b0;
     A = 4'd10;
@@ -211,28 +211,28 @@ include subtraction operation for the CLA.
 
 // Ok, so before we can build the full 32-Bit CLA, we have to build a 4-Bit CLA block thingy to clone 8 times to give us 32-Bit CLA block
 
-module 4Bit_CLA(A, B, Cin, S, Cout);
+module four_bit_CLA(A, B, Cin, S, Cout);
 
-input [3:0] A, B;
-input Cin;
-output [3:0] S
-output Cout;
+  input [3:0] A, B;
+  input Cin;
+  output [3:0] S;
+  output Cout;
 
-wire [3:0] G, P, C; // Generate, propogate, and carry signals
+  wire [3:0] G, P, C; // Generate, propogate, and carry signals
 
-// Define what generate and propogate are
-assign G = A & B;   // A AND B
-assign P = A ^ B;   // A XOR B
+  // Define what generate and propogate are
+  assign G = A & B;   // A AND B
+  assign P = A ^ B;   // A XOR B
 
-// Figuring out the carry computations (You can only use 2-Input AND and OR gates)
-assign C[0] = Cin;
-assign C[1] = G[0] | (P[0] & C[0]);
-assign C[2] = G[1] | (P[1] & C[1]);
-assign C[3] = G[2] | (P[2] & C[2]);
-assign Cout = G[3] | (P[3] & C[3]);
+  // Figuring out the carry computations (You can only use 2-Input AND and OR gates)
+  assign C[0] = Cin;
+  assign C[1] = G[0] | (P[0] & C[0]);
+  assign C[2] = G[1] | (P[1] & C[1]);
+  assign C[3] = G[2] | (P[2] & C[2]);
+  assign Cout = G[3] | (P[3] & C[3]);
 
-// I'm not sure if this is how you get the sum, but hey we'll give it a go
-assign S = P ^ C[3:0];
+  // I'm not sure if this is how you get the sum, but hey we'll give it a go
+  assign S = P ^ C[3:0];
 
 endmodule
 
@@ -240,24 +240,77 @@ endmodule
 
 module CLA(A, B, Cin, S, Cout); 
 
-input [31:0] A, B;
-input Cin;
-output [31:0] S
-output Cout;
+  input [31:0] A, B;
+  input Cin;
+  output [31:0] S;
+  output Cout;
 
-wire [7:0] C; // This should handle the carry bits between the 8 4-Bit CLA blocks
+  wire [7:0] C; // This should handle the carry bits between the 8 4-Bit CLA blocks
 
-// Here's the part where we smash these bad boys together to make a 32-Bit CLA super block
-4Bit_CLA cla0 (A[3:0], B[3:0], Cin, S[3:0], C[0]);
-4Bit_CLA cla1 (A[7:4], B[7:4], C[0], S[7:4], C[1]);
-4Bit_CLA cla2 (A[11:8], B[11:8], C[1], S[11:8], C[2]);
-4Bit_CLA cla3 (A[15:12], B[15:12], C[2], S[15:12], C[3]);
-4Bit_CLA cla4 (A[19:16], B[19:16], C[3], S[19:16], C[4]);
-4Bit_CLA cla5 (A[23:20], B[23:20], C[4], S[23:20], C[5]);
-4Bit_CLA cla6 (A[27:24], B[27:24], C[5], S[27:24], C[6]);
-4Bit_CLA cla7 (A[31:28], B[31:28], C[6], S[31:28], Cout);
-
+  // Here's the part where we smash these bad boys together to make a 32-Bit CLA super block
+  four_bit_CLA cla0 (A[3:0], B[3:0], Cin, S[3:0], C[0]);
+  four_bit_CLA cla1 (A[7:4], B[7:4], C[0], S[7:4], C[1]);
+  four_bit_CLA cla2 (A[11:8], B[11:8], C[1], S[11:8], C[2]);
+  four_bit_CLA cla3 (A[15:12], B[15:12], C[2], S[15:12], C[3]);
+  four_bit_CLA cla4 (A[19:16], B[19:16], C[3], S[19:16], C[4]);
+  four_bit_CLA cla5 (A[23:20], B[23:20], C[4], S[23:20], C[5]);
+  four_bit_CLA cla6 (A[27:24], B[27:24], C[5], S[27:24], C[6]);
+  four_bit_CLA cla7 (A[31:28], B[31:28], C[6], S[31:28], Cout);
 
 endmodule
 
-
+module thirty_two_bit_CLA_tb();
+  reg [31:0] A, B;
+  reg Cin;
+  wire [31:0] S;
+  wire Cout;
+  
+  CLA uut (
+    .A 		(A),
+    .B		(B),
+    .Cin	(Cin),
+    .S		(S),
+    .Cout	(Cout)
+  );
+  
+  initial begin
+    //initialize dumpfile for tb storage
+    $dumpfile("dump.vcd");
+    $dumpvars(1);
+    
+    //Test Cases where Cin = 0
+    A=32'd0;
+    B=32'd0;
+    Cin=1'd0;
+    
+    //loop through all 2^x values
+    //adds values and checks for correct value
+    for(A=32'd1;A!=32'd0;A=A*2) begin
+      for(B=32'd1;B!=32'd0;B=B*2) begin
+        #1;
+        if(S!=(A+B)) begin
+          $display("Error at %0d + %1d. S = %2d.", A, B, S);
+        end
+        #1;
+      end
+    end
+    
+    //Test cases where Cin = 1
+    A=32'd0;
+    B=32'd0;
+    Cin=1'd1;
+    
+    for(A=32'd1;A!=32'd0;A=A*2) begin
+      for(B=32'd1;B!=32'd0;B=B*2) begin
+        #1;
+        if(S!=(A+B+1)) begin
+          $display("Error at %0d + %1d. S = %2d.", A, B, S);
+        end
+        #1;
+      end
+    end
+    
+    $display("All test cases finished!");
+  end
+ 
+endmodule
