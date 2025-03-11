@@ -314,3 +314,65 @@ module thirty_two_bit_CLA_tb();
   end
  
 endmodule
+
+module PPA(A, B, Cin, S, Cout);
+  
+  input [15:0] A, B;
+  input Cin;
+  output [15:0] S;
+  output Cout;
+
+  wire [15:-1] G, P;
+  
+  assign G[-1] = Cin;
+  assign P[-1] = 1'b0;
+  assign G[15:0] = A & B;   // A AND B
+  assign P[15:0] = A ^ B;
+  
+  wire [7:0] G_1, P_1;
+  
+  assign G_1[0] = G[0:0] | (G[-1:-1] & P[0:0]);
+  assign G_1[1] = G[2:2] | (G[1:1] & P[2:2]);
+  assign G_1[2] = G[4:4] | (G[3:3] & P[4:4]);
+  assign G_1[3] = G[6:6] | (G[5:5] & P[6:6]);
+  assign G_1[4] = G[8:8] | (G[7:7] & P[8:8]);
+  assign G_1[5] = G[10:10] | (G[9:9] & P[10:10]);
+  assign G_1[6] = G[12:12] | (G[11:11] & P[12:12]);
+  assign G_1[7] = G[14:14] | (G[13:13] & P[14:14]);
+  
+  assign P_1[0] = (P[-1:-1] & P[0:0]);
+  assign P_1[1] = (P[1:1] & P[2:2]);
+  assign P_1[2] = (P[3:3] & P[4:4]);
+  assign P_1[3] = (P[5:5] & P[6:6]);
+  assign P_1[4] = (P[7:7] & P[8:8]);
+  assign P_1[5] = (P[9:9] & P[10:10]);
+  assign P_1[6] = (P[11:11] & P[12:12]);
+  assign P_1[7] = (P[13:13] & P[14:14]);
+  
+  wire [7:0] G_2, P_2;
+  
+  assign G_2[0] = G[1] | (G_1[0] & P[1]);
+  assign G_2[1] = G_1[1] | (G_1[0] & P_1[1]);
+  assign G_2[2] = G[5] | (G_1[2] & P[5]);
+  assign G_2[3] = G_1[3] | (G_1[2] & P_1[3]);
+  assign G_2[4] = G[9] | (G_1[4] & P[9]);
+  assign G_2[5] = G_1[5] | (G_1[4] & P_1[5]);
+  assign G_2[6] = G[13] | (G_1[6] & P[13]);
+  assign G_2[7] = G_1[7] | (G_1[6] & P_1[7]);
+  
+  assign P_2[0] = (P_1[0] & P[1]);
+  assign P_2[1] = (P_1[0] & P_1[1]);
+  assign P_2[2] = (P_1[2] & P[5]);
+  assign P_2[3] = (P_1[2] & P_1[3]);
+  assign P_2[4] = (P_1[4] & P[9]);
+  assign P_2[5] = (P_1[4] & P_1[5]);
+  assign P_2[6] = (P_1[6] & P[13]);
+  assign P_2[7] = (P_1[6] & P_1[7]);
+  
+  wire [7:0] G_3, P_3;
+  
+  assign G_3[0] = G_1[1] | (G_1[0] & P_2[1]);
+ 
+  
+  
+endmodule
