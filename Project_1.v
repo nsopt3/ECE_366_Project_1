@@ -322,57 +322,176 @@ module PPA(A, B, Cin, S, Cout);
   output [15:0] S;
   output Cout;
 
-  wire [15:-1] G, P;
+  wire [15:-1] [15:-1] G, P;
   
-  assign G[-1] = Cin;
-  assign P[-1] = 1'b0;
-  assign G[15:0] = A & B;   // A AND B
-  assign P[15:0] = A ^ B;
+  assign G[-1][-1] = Cin;
+  assign P[-1][-1] = 1'b0;
   
-  wire [7:0] G_1, P_1;
-  
-  assign G_1[0] = G[0:0] | (G[-1:-1] & P[0:0]);
-  assign G_1[1] = G[2:2] | (G[1:1] & P[2:2]);
-  assign G_1[2] = G[4:4] | (G[3:3] & P[4:4]);
-  assign G_1[3] = G[6:6] | (G[5:5] & P[6:6]);
-  assign G_1[4] = G[8:8] | (G[7:7] & P[8:8]);
-  assign G_1[5] = G[10:10] | (G[9:9] & P[10:10]);
-  assign G_1[6] = G[12:12] | (G[11:11] & P[12:12]);
-  assign G_1[7] = G[14:14] | (G[13:13] & P[14:14]);
-  
-  assign P_1[0] = (P[-1:-1] & P[0:0]);
-  assign P_1[1] = (P[1:1] & P[2:2]);
-  assign P_1[2] = (P[3:3] & P[4:4]);
-  assign P_1[3] = (P[5:5] & P[6:6]);
-  assign P_1[4] = (P[7:7] & P[8:8]);
-  assign P_1[5] = (P[9:9] & P[10:10]);
-  assign P_1[6] = (P[11:11] & P[12:12]);
-  assign P_1[7] = (P[13:13] & P[14:14]);
-  
-  wire [7:0] G_2, P_2;
-  
-  assign G_2[0] = G[1] | (G_1[0] & P[1]);
-  assign G_2[1] = G_1[1] | (G_1[0] & P_1[1]);
-  assign G_2[2] = G[5] | (G_1[2] & P[5]);
-  assign G_2[3] = G_1[3] | (G_1[2] & P_1[3]);
-  assign G_2[4] = G[9] | (G_1[4] & P[9]);
-  assign G_2[5] = G_1[5] | (G_1[4] & P_1[5]);
-  assign G_2[6] = G[13] | (G_1[6] & P[13]);
-  assign G_2[7] = G_1[7] | (G_1[6] & P_1[7]);
-  
-  assign P_2[0] = (P_1[0] & P[1]);
-  assign P_2[1] = (P_1[0] & P_1[1]);
-  assign P_2[2] = (P_1[2] & P[5]);
-  assign P_2[3] = (P_1[2] & P_1[3]);
-  assign P_2[4] = (P_1[4] & P[9]);
-  assign P_2[5] = (P_1[4] & P_1[5]);
-  assign P_2[6] = (P_1[6] & P[13]);
-  assign P_2[7] = (P_1[6] & P_1[7]);
-  
-  wire [7:0] G_3, P_3;
-  
-  assign G_3[0] = G_1[1] | (G_1[0] & P_2[1]);
+  assign G[0][0] = A[0] & B[0];
+  assign G[1][1] = A[1] & B[1];
+  assign G[2][2] = A[2] & B[2];
+  assign G[3][3] = A[3] & B[3];
+  assign G[4][4] = A[4] & B[4];
+  assign G[5][5] = A[5] & B[5];
+  assign G[6][6] = A[6] & B[6];
+  assign G[7][7] = A[7] & B[7];
+  assign G[8][8] = A[8] & B[8];
+  assign G[9][9] = A[9] & B[9];
+  assign G[10][10] = A[10] & B[10];
+  assign G[11][11] = A[11] & B[11];
+  assign G[12][12] = A[12] & B[12];
+  assign G[13][13] = A[13] & B[13];
+  assign G[14][14] = A[14] & B[14];
+  assign G[15][15] = A[15] & B[15];
  
+  assign P[0][0] = A[0] | B[0];
+  assign P[1][1] = A[1] | B[1];
+  assign P[2][2] = A[2] | B[2];
+  assign P[3][3] = A[3] | B[3];
+  assign P[4][4] = A[4] | B[4];
+  assign P[5][5] = A[5] | B[5];
+  assign P[6][6] = A[6] | B[6];
+  assign P[7][7] = A[7] | B[7];
+  assign P[8][8] = A[8] | B[8];
+  assign P[9][9] = A[9] | B[9];
+  assign P[10][10] = A[10] | B[10];
+  assign P[11][11] = A[11] | B[11];
+  assign P[12][12] = A[12] | B[12];
+  assign P[13][13] = A[13] | B[13];
+  assign P[14][14] = A[14] | B[14];
+  assign P[15][15] = A[15] | B[15];
   
+  //row 1
+  assign G[0][-1] = G[0][0] | (P[0][0] & G[-1][-1]);
+  assign P[0][-1] = P[0][0] & P[-1][-1];
+  assign G[2][1] = G[2][2] | (P[2][2] & G[1][1]);
+  assign P[2][1] = P[2][2] & P[1][1];
+  assign G[4][3] = G[4][4] | (P[4][4] & G[3][3]);
+  assign P[4][3] = P[4][4] & P[3][3];
+  assign G[6][5] = G[6][6] | (P[6][6] & G[5][5]);
+  assign P[6][5] = P[6][6] & P[5][5];
+  assign G[8][7] = G[8][8] | (P[8][8] & G[7][7]);
+  assign P[8][7] = P[8][8] & P[7][7];
+  assign G[10][9] = G[10][10] | (P[10][10] & G[9][9]);
+  assign P[10][9] = P[10][10] & P[9][9];
+  assign G[12][11] = G[12][12] | (P[12][12] & G[11][11]);
+  assign P[12][11] = P[12][12] & P[11][11];
+  assign G[14][13] = G[14][14] | (P[14][14] & G[13][13]);
+  assign P[14][13] = P[14][14] & P[13][13];
+  
+  //row 2
+  assign G[1][-1] = G[1][1] | (P[1][1] & G[0][-1]);
+  assign P[1][-1] = P[1][1] & P[0][-1];
+  assign G[2][-1] = G[2][1] | (P[2][1] & G[0][-1]);
+  assign P[2][-1] = P[2][1] & P[0][-1];
+  assign G[5][3] = G[5][5] | (P[5][5] & G[4][3]);
+  assign P[5][3] = P[5][5] & P[4][3];
+  assign G[6][3] = G[6][5] | (P[6][5] & G[4][3]);
+  assign P[6][3] = P[6][5] & P[4][3];
+  assign G[9][7] = G[9][9] | (P[9][9] & G[8][7]);
+  assign P[9][7] = P[9][9] & P[8][7];
+  assign G[10][7] = G[10][9] | (P[10][9] & G[8][7]);
+  assign P[10][7] = P[10][9] & P[8][7];
+  assign G[13][11] = G[13][13] | (P[13][13] & G[12][11]);
+  assign P[13][11] = P[13][13] & P[12][11];
+  assign G[14][11] = G[14][13] | (P[14][13] & G[12][11]);
+  assign P[14][11] = P[14][13] & P[12][11];
+  
+  //row 3
+  assign G[3][-1] = G[3][3] | (P[3][3] & G[2][-1]);
+  assign P[3][-1] = P[3][3] & P[2][-1];
+  assign G[4][-1] = G[4][3] | (P[4][3] & G[2][-1]);
+  assign P[4][-1] = P[4][3] & P[2][-1];
+  assign G[5][-1] = G[5][3] | (P[5][3] & G[2][-1]);
+  assign P[5][-1] = P[5][3] & P[2][-1];
+  assign G[6][-1] = G[6][3] | (P[6][3] & G[2][-1]);
+  assign P[6][-1] = P[6][3] & P[2][-1];
+  assign G[11][7] = G[11][11] | (P[11][11] & G[10][7]);
+  assign P[11][7] = P[11][11] & P[10][7];
+  assign G[12][7] = G[12][11] | (P[12][11] & G[10][7]);
+  assign P[12][7] = P[12][11] & P[10][7];
+  assign G[13][7] = G[13][11] | (P[13][11] & G[10][7]);
+  assign P[13][7] = P[13][11] & P[10][7];
+  assign G[14][7] = G[14][11] | (P[14][11] & G[10][7]);
+  assign P[14][7] = P[14][11] & P[10][7];
+  
+  //row 4
+  assign G[7][-1] = G[7][7] | (P[7][7] & G[6][-1]);
+  assign P[7][-1] = P[7][7] & P[6][-1];
+  assign G[8][-1] = G[8][7] | (P[8][7] & G[6][-1]);
+  assign P[8][-1] = P[8][7] & P[6][-1];
+  assign G[9][-1] = G[9][7] | (P[9][7] & G[6][-1]);
+  assign P[9][-1] = P[9][7] & P[6][-1];
+  assign G[10][-1] = G[10][7] | (P[10][7] & G[6][-1]);
+  assign P[10][-1] = P[10][7] & P[6][-1];
+  assign G[11][-1] = G[11][7] | (P[11][7] & G[6][-1]);
+  assign P[11][-1] = P[11][7] & P[6][-1];
+  assign G[12][-1] = G[12][7] | (P[12][7] & G[6][-1]);
+  assign P[12][-1] = P[12][7] & P[6][-1];
+  assign G[13][-1] = G[13][7] | (P[13][7] & G[6][-1]);
+  assign P[13][-1] = P[13][7] & P[6][-1];
+  assign G[14][-1] = G[14][7] | (P[14][7] & G[6][-1]);
+  assign P[14][-1] = P[14][7] & P[6][-1];
+  
+  //sums
+  assign S[0] = G[-1][-1] ^ (A[0] ^ B[0]);
+  assign S[1] = G[0][-1] ^ (A[1] ^ B[1]);
+  assign S[2] = G[1][-1] ^ (A[2] ^ B[2]);
+  assign S[3] = G[2][-1] ^ (A[3] ^ B[3]);
+  assign S[4] = G[3][-1] ^ (A[4] ^ B[4]);
+  assign S[5] = G[4][-1] ^ (A[5] ^ B[5]);
+  assign S[6] = G[5][-1] ^ (A[6] ^ B[6]);
+  assign S[7] = G[6][-1] ^ (A[7] ^ B[7]);
+  assign S[8] = G[7][-1] ^ (A[8] ^ B[8]);
+  assign S[9] = G[8][-1] ^ (A[9] ^ B[9]);
+  assign S[10] = G[9][-1] ^ (A[10] ^ B[10]);
+  assign S[11] = G[10][-1] ^ (A[11] ^ B[11]);
+  assign S[12] = G[11][-1] ^ (A[12] ^ B[12]);
+  assign S[13] = G[12][-1] ^ (A[13] ^ B[13]);
+  assign S[14] = G[13][-1] ^ (A[14] ^ B[14]);
+  assign S[15] = G[14][-1] ^ (A[15] ^ B[15]);
+  
+  //for(integer i = 0; i<16; i=i+1) begin
+  //  assign S[i] = G[i-1][-1] ^ (A[i] ^ B[i]);
+  //end
+  
+endmodule
+
+module PPA_tb();
+  reg [15:0] A, B;
+  reg Cin;
+  wire [15:0] S;
+  wire Cout;
+  
+  PPA uut (
+    .A 		(A),
+    .B		(B),
+    .Cin	(Cin),
+    .S		(S),
+    .Cout	(Cout)
+  );
+  
+  initial begin
+    //initialize dumpfile for tb storage
+    $dumpfile("dump.vcd");
+    $dumpvars(1, uut);
+    
+    A=15'd0;
+    B=15'd0;
+    Cin = 1'b0;
+   	#1
+    
+    for(A=16'd1;A!=16'd0;A=A*2) begin
+      for(B=16'd1;B<16'd100;B=B+1) begin
+        #1;
+        if(S!=(A+B)) begin
+          $display("Error at %0d + %1d. S = %2d.", A, B, S);
+        end
+        #1;
+      end
+    end
+    
+    $display("All test cases finished  for PPA!");  
+  end
   
 endmodule
