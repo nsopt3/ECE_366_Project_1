@@ -495,3 +495,117 @@ module PPA_tb();
   end
   
 endmodule
+
+module kogge_stone_16bit_adder(
+    input [15:0] A, B,
+    input Cin,
+    output [15:0] S,
+    output Cout
+);
+    wire [15:0] G, P, C;
+    
+    // Step 1: Precompute Generate and Propagate
+    assign G = A & B;   // Generate
+    assign P = A ^ B;   // Propagate
+    
+    // Step 2: Prefix Computation using Kogge-Stone Tree
+    wire [15:0] G1, P1, G2, P2, G3, P3, G4, P4;
+    
+    // Level 1
+    assign G1[0]  = G[0];
+    assign P1[0]  = P[0];
+    genvar i;
+    generate
+        for (i = 1; i < 16; i = i + 1) begin
+            assign G1[i] = G[i] | (P[i] & G[i-1]);
+            assign P1[i] = P[i] & P[i-1];
+        end
+    endgenerate
+    
+    // Level 2
+    assign G2[0] = G1[0];
+    assign G2[1] = G1[1];
+    assign P2[0] = P1[0];
+    assign P2[1] = P1[1];
+    generate
+        for (i = 2; i < 16; i = i + 1) begin
+            assign G2[i] = G1[i] | (P1[i] & G1[i-2]);
+            assign P2[i] = P1[i] & P1[i-2];
+        end
+    endgenerate
+    
+    // Level 3
+    assign G3[0] = G2[0];
+    assign G3[1] = G2[1];
+    assign G3[2] = G2[2];
+    assign G3[3] = G2[3];
+    generate
+        for (i = 4; i < 16; i = i + 1) begin
+            assign G3[i] = G2[i] | (P2[i] & G2[i-4]);
+            assign P3[i] = P2[i] & P2[i-4];
+        end
+    endgenerate
+    
+    // Level 4
+    assign G4[0] = G3[0];
+    assign G4[1] = G3[1];
+    assign G4[2] = G3[2];
+    assign G4[3] = G3[3];
+    assign G4[4] = G3[4];
+    assign G4[5] = G3[5];
+    assign G4[6] = G3[6];
+    assign G4[7] = G3[7];
+    generate
+        for (i = 8; i < 16; i = i + 1) begin
+            assign G4[i] = G3[i] | (P3[i] & G3[i-8]);
+        end
+    endgenerate
+    
+    // Step 3: Compute Final Carry Values
+    assign C[0] = Cin;
+    assign C[1] = G1[0] | (P1[0] & Cin);
+    assign C[2] = G2[1] | (P2[1] & C[1]);
+    assign C[3] = G3[2] | (P3[2] & C[2]);
+    assign C[4] = G4[3] | (P4[3] & C[3]);
+    assign C[5] = G4[4] | (P4[4] & C[4]);
+    assign C[6] = G4[5] | (P4[5] & C[5]);
+    assign C[7] = G4[6] | (P4[6] & C[6]);
+    assign C[8] = G4[7] | (P4[7] & C[7]);
+    assign C[9] = G4[8] | (P4[8] & C[8]);
+    assign C[10] = G4[9] | (P4[9] & C[9]);
+    assign C[11] = G4[10] | (P4[10] & C[10]);
+    assign C[12] = G4[11] | (P4[11] & C[11]);
+    assign C[13] = G4[12] | (P4[12] & C[12]);
+    assign C[14] = G4[13] | (P4[13] & C[13]);
+    assign C[15] = G4[14] | (P4[14] & C[14]);
+    assign Cout = G4[15] | (P4[15] & C[15]);
+    
+    // Step 4: Compute Sum
+    assign S = P ^ C;
+    
+endmodule
+
+// Testbench for Kogge-Stone 16-bit Adder
+module kogge_stone_16bit_adder_tb;
+    reg [15:0] A, B;
+    reg Cin;
+    wire [15:0] S;
+    wire Cout;
+    
+    kogge_stone_16bit_adder uut (.A(A), .B(B), .Cin(Cin), .S(S), .Cout(Cout));
+    
+    initial begin
+        $dumpfile("kogge_stone_tb.vcd");
+        $dumpvars(0, kogge_stone_16bit_adder_tb);
+        
+        A = 16'h0001; B = 16'h0001; Cin = 0; #10;
+        A = 16'hFFFF; B = 16'h0001; Cin = 0; #10;
+        A = 16'hAAAA; B = 16'h5555; Cin = 1; #10;
+        A = 16'h1234; B = 16'h5678; Cin = 0; #10;
+        A = 16'hFFFF; B = 16'hFFFF; Cin = 1; #10;
+        
+        $display("Test completed.");
+        $finish;
+    end
+endmodule
+
