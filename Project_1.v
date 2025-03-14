@@ -193,6 +193,55 @@ module four_bit_RCA_RCS_tb();
 
 endmodule
 
+module one_bit_FA_tb();
+  reg A, B, Cin;
+  wire S, Cout;
+  
+  one_bit_full_adder uut (
+    .A		(A),
+    .B		(B),
+    .Cin	(Cin),
+    .S		(S),
+    .Cout	(Cout)
+  );
+
+  initial begin
+  	A=1'b0;
+  	B=1'b0;
+  	Cin=1'b0;
+  	#1
+  	A=1'b1;
+  	B=1'b0;
+  	Cin=1'b0;
+  	#1
+  	A=1'b0;
+  	B=1'b1;
+    Cin=1'b0;
+    #1
+    A=1'b1;
+    B=1'b1;
+    Cin=1'b0;
+    #1
+    A=1'b0;
+    B=1'b0;
+    Cin=1'b1;
+    #1
+    A=1'b1;
+    B=1'b0;
+    Cin=1'b1;
+    #1
+    A=1'b0;
+    B=1'b1;
+    Cin=1'b1;
+    #1
+    A=1'b1;
+    B=1'b1;
+    Cin=1'b1;
+  	#1;
+  end 
+  
+endmodule
+
 // ******************************** Begin problem #2 **********************************
 
 // Problem 2 (Designing a 32-bit CLA Adder/Subtractor).
