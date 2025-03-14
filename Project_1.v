@@ -315,6 +315,8 @@ module thirty_two_bit_CLA_tb();
  
 endmodule
 
+// ******************************** Begin problem #3 **********************************
+
 module PPA(A, B, Cin, S, Cout);
   
   input [15:0] A, B;
@@ -457,6 +459,8 @@ module PPA(A, B, Cin, S, Cout);
   
 endmodule
 
+// ************ Problem #3 testbench *********************
+
 module PPA_tb();
   reg [15:0] A, B;
   reg Cin;
@@ -495,6 +499,8 @@ module PPA_tb();
   end
   
 endmodule
+
+// **************************************** BONUS PROBLEM #4 KOGGE-STONE ADDER *****************************************
 
 module kogge_stone_16bit_adder(
     input [15:0] A, B,
