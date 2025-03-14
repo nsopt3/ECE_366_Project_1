@@ -604,8 +604,7 @@ module kogge_stone_16bit_adder_tb;
         A = 16'h1234; B = 16'h5678; Cin = 0; #10;
         A = 16'hFFFF; B = 16'hFFFF; Cin = 1; #10;
         
-        $display("Test completed.");
-        $finish;
+        $display("Kogg-Stone Test completed.");
     end
 endmodule
 
